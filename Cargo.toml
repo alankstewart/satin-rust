@@ -1,0 +1,6 @@
+[package]
+name = "satin-rust"
+version = "0.1.0"
+authors = ["Alan Stewart <alankstewart@gmail.com>"]
+
+[dependencies]
