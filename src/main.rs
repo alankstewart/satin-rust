@@ -49,7 +49,19 @@ fn calculate() {
 fn process(input_powers: &Vec<u32>, laser: &Laser) {
     let path = Path::new(laser.output_file);
     let mut fd = File::create(&path).unwrap();
-    let header: String = format!("Start date: {}\n\nGaussian Beam\n\nPressure in Main Discharge = {}kPa\nSmall-signal Gain = {:4.1}\nCO2 via {}\n\nPin\t\tPout\t\tSat. Int\tln(Pout/Pin)\tPout-Pin\n(watts)\t\t(watts)\t\t(watts/cm2)\t\t\t(watts)\n", time::strftime("%c", &time::now()).unwrap(), laser.discharge_pressure, laser.small_signal_gain, laser.carbon_dioxide);
+    let header: String = format!(
+        "Start date: {}\n\n\
+         Gaussian Beam\n\n\
+         Pressure in Main Discharge = {}kPa\n\
+         Small-signal Gain = {:4.1}\n\
+         CO2 via {}\n\n\
+         Pin\t\tPout\t\tSat. Int\tln(Pout/Pin)\tPout-Pin\n\
+         (watts)\t\t(watts)\t\t(watts/cm2)\t\t\t(watts)\n",
+        time::strftime("%c", &time::now()).unwrap(),
+        laser.discharge_pressure,
+        laser.small_signal_gain,
+        laser.carbon_dioxide
+    );
     fd.write_all(header.as_bytes()).unwrap();
 
     for input in input_powers.iter() {
