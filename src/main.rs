@@ -1,5 +1,7 @@
 extern crate time;
 
+use std::sync::Arc;
+use std::thread;
 use std::time::Instant;
 use std::str::FromStr;
 use std::f64::consts::PI;
@@ -27,11 +29,11 @@ struct Gaussian {
 }
 
 #[derive(Debug)]
-struct Laser<'a> {
+struct Laser {
     small_signal_gain: f32,
     discharge_pressure: u32,
-    output_file: &'a str,
-    carbon_dioxide: &'a str,
+    output_file: String,
+    carbon_dioxide: String,
 }
 
 fn main() {
@@ -46,16 +48,29 @@ fn main() {
 }
 
 fn calculate() {
-    let input_powers = get_input_powers(&get_file_as_string("pin.dat"));
+    let pins_file = get_file_as_string("pin.dat");
+    let inputs = get_input_powers(&pins_file);
+    let inputs_rc = Arc::new(inputs);
+
     let laser_file = get_file_as_string("laser.dat");
     let lasers = get_laser_data(&laser_file);
-    for laser in lasers.iter() {
-        process(&input_powers, laser);
+
+    let mut handles = Vec::new();
+    for laser in lasers {
+        let input_ref = Arc::clone(&inputs_rc);
+        let handle = thread::spawn(move || {
+            process(&input_ref, &laser);
+        });
+        handles.push(handle);
+    }
+
+    for h in handles {
+        h.join().unwrap();
     }
 }
 
 fn process(input_powers: &Vec<u32>, laser: &Laser) {
-    let path = Path::new(laser.output_file);
+    let path = Path::new(&laser.output_file);
     let mut fd = File::create(&path).unwrap();
     let header: String = format!(
         "Start date: {}\n\n\
@@ -154,14 +169,14 @@ fn get_laser_data(data: &str) -> Vec<Laser> {
         .collect()
 }
 
-impl<'a> From<&'a str> for Laser<'a> {
+impl<'a> From<&'a str> for Laser {
     fn from(s: &str) -> Laser {
         let mut split = s.split_whitespace();
         Laser {
-            output_file: split.next().unwrap(),
+            output_file: split.next().unwrap().to_string(),
             small_signal_gain: split.next().unwrap().parse().unwrap(),
             discharge_pressure: split.next().unwrap().parse().unwrap(),
-            carbon_dioxide: split.next().unwrap(),
+            carbon_dioxide: split.next().unwrap().to_string(),
         }
     }
 }
