@@ -1,5 +1,6 @@
 extern crate time;
 
+use std::time::Instant;
 use std::str::FromStr;
 use std::f64::consts::PI;
 use std::fs::File;
@@ -34,7 +35,14 @@ struct Laser<'a> {
 }
 
 fn main() {
+    let start = Instant::now();
     calculate();
+    let elapsed = start.elapsed();
+    println!(
+        "The time was {}.{} seconds",
+        elapsed.as_secs(),
+        elapsed.subsec_nanos()
+    );
 }
 
 fn calculate() {
