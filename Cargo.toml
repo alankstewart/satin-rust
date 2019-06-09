@@ -1,7 +1,7 @@
 [package]
 name = "satin-rust"
 version = "0.1.0"
-authors = ["ben.alex@acegi.com.au"]
+authors = ["ben.alex@acegi.com.au","alankstewart@gmail.com"]
 
 [dependencies]
 time = "0.1"
