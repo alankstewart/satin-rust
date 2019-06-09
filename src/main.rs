@@ -1,13 +1,13 @@
 extern crate time;
 
-use std::sync::Arc;
-use std::thread;
-use std::time::Instant;
-use std::str::FromStr;
 use std::f64::consts::PI;
 use std::fs::File;
 use std::io::prelude::*;
 use std::path::Path;
+use std::str::FromStr;
+use std::sync::Arc;
+use std::thread;
+use std::time::Instant;
 
 const RAD: f64 = 0.18;
 const RAD2: f64 = RAD * RAD;
@@ -67,6 +67,29 @@ fn calculate() {
     for h in handles {
         h.join().unwrap();
     }
+}
+
+fn get_file_as_string(name: &str) -> String {
+    let path = Path::new(name);
+    let mut file = File::open(&path).expect(&format!("Can't open file {}", name));
+    let mut data = String::new();
+    file.read_to_string(&mut data)
+        .expect(&format!("Cannot parse {} into a string", name));
+    data
+}
+
+fn get_input_powers(data: &str) -> Vec<u32> {
+    data.lines()
+        .map(str::trim)
+        .filter_map(|s| u32::from_str(s).ok())
+        .collect()
+}
+
+fn get_laser_data(data: &str) -> Vec<Laser> {
+    data.lines()
+        .map(str::trim)
+        .map(|s| Laser::from(s))
+        .collect()
 }
 
 fn process(input_powers: &Vec<u32>, laser: &Laser) {
@@ -144,29 +167,6 @@ fn gaussian_calculation(input_power: u32, small_signal_gain: f32, gaussian_data:
 
         saturation_intensity += 1000;
     }
-}
-
-fn get_file_as_string(name: &str) -> String {
-    let path = Path::new(name);
-    let mut file = File::open(&path).expect(&format!("Can't open file {}", name));
-    let mut data = String::new();
-    file.read_to_string(&mut data)
-        .expect(&format!("Cannot parse {} into a string", name));
-    data
-}
-
-fn get_input_powers(data: &str) -> Vec<u32> {
-    data.lines()
-        .map(str::trim)
-        .filter_map(|s| u32::from_str(s).ok())
-        .collect()
-}
-
-fn get_laser_data(data: &str) -> Vec<Laser> {
-    data.lines()
-        .map(str::trim)
-        .map(|s| Laser::from(s))
-        .collect()
 }
 
 impl<'a> From<&'a str> for Laser {
