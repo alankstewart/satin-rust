@@ -92,6 +92,18 @@ fn get_laser_data(data: &str) -> Vec<Laser> {
         .collect()
 }
 
+impl<'a> From<&'a str> for Laser {
+    fn from(s: &str) -> Laser {
+        let mut split = s.split_whitespace();
+        Laser {
+            output_file: split.next().unwrap().to_string(),
+            small_signal_gain: split.next().unwrap().parse().unwrap(),
+            discharge_pressure: split.next().unwrap().parse().unwrap(),
+            carbon_dioxide: split.next().unwrap().to_string(),
+        }
+    }
+}
+
 fn process(input_powers: &Vec<u32>, laser: &Laser) {
     let path = Path::new(&laser.output_file);
     let mut fd = File::create(&path).unwrap();
@@ -166,17 +178,5 @@ fn gaussian_calculation(input_power: u32, small_signal_gain: f32, gaussian_data:
         i += 1;
 
         saturation_intensity += 1000;
-    }
-}
-
-impl<'a> From<&'a str> for Laser {
-    fn from(s: &str) -> Laser {
-        let mut split = s.split_whitespace();
-        Laser {
-            output_file: split.next().unwrap().to_string(),
-            small_signal_gain: split.next().unwrap().parse().unwrap(),
-            discharge_pressure: split.next().unwrap().parse().unwrap(),
-            carbon_dioxide: split.next().unwrap().to_string(),
-        }
     }
 }
