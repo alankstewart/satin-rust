@@ -11,12 +11,12 @@ use std::time::Instant;
 
 const RAD: f64 = 0.18;
 const RAD2: f64 = RAD * RAD;
-const W2: f64 = 0.3 * 0.3;
+const W1: f64 = 0.3;
 const DR: f64 = 0.002;
 const DZ: f64 = 0.04;
 const LAMBDA: f64 = 0.0106;
 const AREA: f64 = PI * RAD2;
-const Z1: f64 = PI * W2 / LAMBDA;
+const Z1: f64 = PI * W1 * W1 / LAMBDA;
 const Z12: f64 = Z1 * Z1;
 const EXPR: f64 = 2_f64 * PI * DR;
 const INCR: usize = 8001;
