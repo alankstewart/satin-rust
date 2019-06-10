@@ -157,8 +157,8 @@ fn gaussian_calculation(input_power: u32, small_signal_gain: f32, gaussian_data:
     let mut saturation_intensity = 10000;
     while saturation_intensity <= 25000 {
         let expr3 = f64::from(saturation_intensity) * expr2;
-        let mut output_power: f64 = 0.0;
-        let mut r = 0.0 as f32;
+        let mut output_power = 0.0_f64;
+        let mut r = 0.0_f32;
         while r <= 0.5 {
             let mut output_intensity =
                 input_intensity * (f64::from(-2) * f64::from(r.powi(2)) / RAD2).exp();
