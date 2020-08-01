@@ -138,6 +138,7 @@ fn process(input_powers: &[u32], laser: &Laser) {
         time::strftime("%c", &time::now()).unwrap()
     );
     fd.write_all(footer.as_bytes()).unwrap();
+    println!("Created {}", path.display());
 }
 
 fn gaussian_calculation(input_power: u32, small_signal_gain: f32, gaussian_data: &mut [Gaussian]) {
